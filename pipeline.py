@@ -212,8 +212,7 @@ class WgetArgs(object):
             "--wait", "1",
             "--random-wait",
             "--waitretry", "30",
-            # "--domains", "example.com,example.net",
-            # "--hostnames", "assets.cloudspeeder.invalid,cnd.wahoo.invalid",
+            # "--domains", "furaffinity.net,facdn.net",
             "--warc-file", ItemInterpolation("%(item_dir)s/%(warc_file_base)s"),
             "--warc-header", "operator: Archive Team",
             "--warc-header", "furaffinity-dld-script-version: " + VERSION,
@@ -222,7 +221,38 @@ class WgetArgs(object):
 
         item_type, item_value = item['item_name'].split(':', 1)
 
-        raise Exception('Unknown item type.')
+        if item_type == 'profile':
+            usernames = item_value.split(',')
+
+            for username in usernames:
+                wget_args.extend([
+                    'https://www.furaffinity.net/user/{}/'.format(username),
+                    'https://www.furaffinity.net/commissions/{}/'.format(username),
+                    'https://www.furaffinity.net/journals/{}/'.format(username),
+                    'https://www.furaffinity.net/gallery/{}/'.format(username),
+                    'https://www.furaffinity.net/scraps/{}/'.format(username),
+                    'https://www.furaffinity.net/favorites/{}/'.format(username),
+                ])
+        elif item_type == 'journal':
+            start_num, end_num = item_value.split('-', 1)
+
+            for num in range(start_num, end_num + 1):
+                wget_args.append(
+                    'https://www.furaffinity.net/journal/{}/'.format(num)
+                )
+
+        elif item_type == 'submission':
+            start_num, end_num = item_value.split('-', 1)
+
+            for num in range(start_num, end_num + 1):
+                wget_args.extend([
+                    'https://www.furaffinity.net/view/{}/'.format(num),
+                    'https://www.furaffinity.net/full/{}/'.format(num),
+                ]
+            )
+
+        else:
+            raise Exception('Unknown item type.')
 
         if 'bind_address' in globals():
             wget_args.extend(['--bind-address', globals()['bind_address']])
