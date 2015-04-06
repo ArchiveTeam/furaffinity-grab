@@ -48,7 +48,7 @@ def accept_url(url_info, record_info, verdict, reasons):
                 else:
                     raise Exception('Unknown what type!')
 
-        if '/themes/classic/img/' in url_info['url']:
+        if '/themes/classic/' in url_info['url']:
             return False
         if 'google-analytics.com' in url_info['url']:
             return False
