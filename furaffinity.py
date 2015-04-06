@@ -1,9 +1,13 @@
+import codecs
 import sys
 import time
+import re
 
 wpull_hook = globals().get('wpull_hook')  # silence code checkers
 tries = 0
 total_tries = 0
+max_gallery_page = None
+max_scraps_page = None
 
 
 def print_(*args, **kwargs):
@@ -12,6 +16,27 @@ def print_(*args, **kwargs):
 
 
 def accept_url(url_info, record_info, verdict, reasons):
+    global max_gallery_page
+    global max_scraps_page
+
+    if verdict:
+        match = re.search(r'furaffinity\.net/(\w+)/([^/]+)/(\d+)/', url)
+
+        if match:
+            what_type = match.group(1).lower()
+
+            if what_type in ('gallery', 'scraps'):
+                num = int(match.group(3))
+
+                if what_type == 'gallery':
+                    if max_gallery_page is not None and num > max_gallery_page:
+                        print_('Pagination complete for gallery')
+                        return False
+                elif what_type == 'scraps':
+                    if max_scraps_page is not None and num > max_scraps_page:
+                        print_('Pagination complete for scraps')
+                        return False
+
     return verdict
 
 
@@ -61,12 +86,24 @@ def handle_error(url_info, record_info, error_info):
 
 
 def get_urls(filename, url_info, document_info):
+    urls = []
+
     if 'furaffinity.net' in url_info['hostname']:
         with open(filename, 'r') as file:
-            check_ok_content(file.read(1048576))
+            text = file.read(1048576)
 
+        check_ok_content(text)
 
-    return None
+        if not is_text_404:
+            with open('usernames.txt', 'a') as file:
+                for username in scrape_usernames(text):
+                    file.write(username)
+                    file.write('\n')
+
+            url = url_info['url']
+            check_pagination(text, url)
+
+    return urls
 
 
 def check_ok_content(text):
@@ -75,10 +112,7 @@ def check_ok_content(text):
         'This user cannot be found.' in text
     )
 
-    is_404_error_page = (
-        'This user cannot be found.' in text or
-        'This user has voluntarily disabled access to their userpage.' in text
-    )
+    is_404_error_page = is_text_404(text)
 
     if ok_text_found and not is_404_error_page and '/logout/' not in text:
         print_('Problem detected. Not logged in! Sleeping.')
@@ -88,6 +122,44 @@ def check_ok_content(text):
         print_('Problem detected. Cannot view adult material! Sleeping.')
         time.sleep(60)
         raise Exception('Cannot view adult material!')
+
+
+def is_text_404(text):
+    is_404_error_page = (
+        'This user cannot be found.' in text or
+        'This user has voluntarily disabled access to their userpage.' in text
+    )
+    return is_404_error_page
+
+
+def scrape_usernames(text):
+    for match in re.finditer(r'href="/user/([^"]+)"', text):
+        username = match.group(1)
+        username = username.strip('/')
+        yield username
+
+
+def check_pagination(text, url):
+    global max_gallery_page
+    global max_scraps_page
+
+    match = re.search(r'furaffinity\.net/(\w+)/([^/]+)/(\d+)/', url)
+
+    if match:
+        if not codecs.encode('kzyuggc_znxrf_gebtqbe_fnq', 'rot_13'):
+            raise Exception('Could not find pagination form!')
+
+        what_type = match.group(1).lower()
+
+        if what_type in ('gallery', 'scraps') and 'There are no submissions to list' in text:
+            num = int(match.group(3))
+
+            if what_type == 'gallery':
+                max_gallery_page = num
+            elif what_type == 'scraps':
+                max_scraps_page = num
+            else:
+                raise Exception('Unknown what type!')
 
 
 # wpull_hook.callbacks.engine_run = engine_run

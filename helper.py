@@ -155,5 +155,48 @@ def main():
             requests_session.cookies = pickle.load(state_file)
 
         logout()
+
+        scraped_usernames = set()
+
+        with open('usernames.txt', 'r') as file:
+            for line in file:
+                scraped_usernames.add(line.strip())
+
+        results = {
+            'discovered_usernames': tuple(scraped_usernames),
+            'username_disabled_map': []
+        }
+
+        upload_username_results(results, disco_tracker, scraped_from_private=True)
     else:
         raise Exception('Unknown command.')
+
+
+def upload_username_results(results, tracker_url, scraped_from_private=False):
+    if scraped_from_private:
+        url = tracker_url + '/api/user_private_discovery'
+    else:
+        url = tracker_url + '/api/user_discovery'
+
+    for try_count in range(10):
+        print_('Uploading results...', end='')
+        try:
+            response = requests.post(
+                url,
+                data=json.dumps(results).encode('ascii'),
+                timeout=60
+            )
+        except requests.exceptions.ConnectionError:
+            print_('Connection error.')
+            print_('Sleeping...')
+            time.sleep(60)
+        else:
+            print_(response.status_code)
+
+            if response.status_code == 200:
+                return
+            else:
+                print_('Sleeping...')
+                time.sleep(60)
+
+    raise Exception('Failed to upload.')
