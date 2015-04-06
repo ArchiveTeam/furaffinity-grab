@@ -195,6 +195,7 @@ class WgetArgs(object):
         wget_args = [
             WPULL_EXE,
             "-nv",
+            "-4",
             "--user-agent", user_agent,
             "--python-script", "furaffinity.py",
             "-o", ItemInterpolation("%(item_dir)s/wpull.log"),
@@ -223,17 +224,17 @@ class WgetArgs(object):
         item_type, item_value = item['item_name'].split(':', 1)
 
         if item_type == 'profile':
-            usernames = item_value.split(',')
+            username = item_value
+            assert ',' not in username, 'multi user not supported {0}'.format(item_value)
 
-            for username in usernames:
-                wget_args.extend([
-                    'https://www.furaffinity.net/user/{}/'.format(username),
-                    'https://www.furaffinity.net/commissions/{}/'.format(username),
-                    'https://www.furaffinity.net/journals/{}/'.format(username),
-                    'https://www.furaffinity.net/gallery/{}/'.format(username),
-                    'https://www.furaffinity.net/scraps/{}/'.format(username),
-                    'https://www.furaffinity.net/favorites/{}/'.format(username),
-                ])
+            wget_args.extend([
+                'https://www.furaffinity.net/user/{}/'.format(username),
+                'https://www.furaffinity.net/commissions/{}/'.format(username),
+                'https://www.furaffinity.net/journals/{}/'.format(username),
+                'https://www.furaffinity.net/gallery/{}/'.format(username),
+                'https://www.furaffinity.net/scraps/{}/'.format(username),
+                'https://www.furaffinity.net/favorites/{}/'.format(username),
+            ])
         elif item_type == 'journal':
             start_num, end_num = item_value.split('-', 1)
 
