@@ -142,7 +142,8 @@ def get_urls(filename, url_info, document_info):
 
 def check_ok_content(text):
     ok_text_found = (
-        'Page generated in' in text or
+        'Commission Info</a>' in text or
+        '<b>Submission information:' in text or
         'This user cannot be found.' in text or
         'The journal you are trying to find is not in our database.' in text or
         'The submission you are trying to find is not in our database.' in text
