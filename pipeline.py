@@ -211,7 +211,7 @@ class WgetArgs(object):
             "--span-hosts-allow", "page-requisites",
             "--timeout", "60",
             "--tries", "inf",
-            "--wait", "1",
+            "--wait=1",
             "--random-wait",
             "--waitretry", "30",
             # "--domains", "furaffinity.net,facdn.net",
@@ -237,16 +237,23 @@ class WgetArgs(object):
             ])
         elif item_type == 'journal':
             start_num, end_num = item_value.split('-', 1)
+            nums = list(range(int(start_num), int(end_num) + 1))
+            random.shuffle(nums)
 
-            for num in range(start_num, end_num + 1):
+            for num in nums:
                 wget_args.append(
                     'https://www.furaffinity.net/journal/{}/'.format(num)
                 )
 
         elif item_type == 'submission':
-            start_num, end_num = item_value.split('-', 1)
+            wget_args.remove("--wait=1")
+            wget_args.append("--wait=2")
 
-            for num in range(start_num, end_num + 1):
+            start_num, end_num = item_value.split('-', 1)
+            nums = list(range(int(start_num), int(end_num) + 1))
+            random.shuffle(nums)
+
+            for num in nums:
                 wget_args.extend([
                     'https://www.furaffinity.net/view/{}/'.format(num),
                     'https://www.furaffinity.net/full/{}/'.format(num),
