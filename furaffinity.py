@@ -59,6 +59,9 @@ def accept_url(url_info, record_info, verdict, reasons):
         if re.search(r'/commissions/.*/(add|manage)/$', url_info['url']):
             return False
 
+    if not verdict and 'facdn.net' in url and '/full/' in record_info['referrer']:
+        return True
+
     return verdict
 
 
@@ -127,13 +130,22 @@ def get_urls(filename, url_info, document_info):
 
         print_('Looking good so far..')
 
+        match = re.search(r'<a href="([^"]+)">Download</a>', text)
+
+        if match:
+            urls.append({
+                'url': match.group(1)
+            })
+
     return urls
 
 
 def check_ok_content(text):
     ok_text_found = (
         'Page generated in' in text or
-        'This user cannot be found.' in text
+        'This user cannot be found.' in text or
+        'The journal you are trying to find is not in our database.' in text or
+        'The submission you are trying to find is not in our database.' in text
     )
 
     is_404_error_page = is_text_404(text)
@@ -151,7 +163,9 @@ def check_ok_content(text):
 def is_text_404(text):
     is_404_error_page = (
         'This user cannot be found.' in text or
-        'This user has voluntarily disabled access to their userpage.' in text
+        'This user has voluntarily disabled access to their userpage.' in text or
+        'The journal you are trying to find is not in our database.' in text or
+        'The submission you are trying to find is not in our database.' in text
     )
     return is_404_error_page
 
