@@ -59,6 +59,9 @@ def accept_url(url_info, record_info, verdict, reasons):
         if re.search(r'/commissions/.*/(add|manage)/$', url_info['url']):
             return False
 
+        if 'facdn.net' in url and 'furaffinity.net/favorites/' in record_info['referrer']:
+            return False
+
     if not verdict and 'facdn.net' in url and '/full/' in record_info['referrer']:
         return True
 
