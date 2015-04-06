@@ -1,4 +1,5 @@
 import codecs
+import os
 import sys
 import time
 import re
@@ -8,6 +9,8 @@ tries = 0
 total_tries = 0
 max_gallery_page = None
 max_scraps_page = None
+max_favorites_page = None
+item_dir = os.environ['item_dir']
 
 
 def print_(*args, **kwargs):
@@ -19,13 +22,15 @@ def accept_url(url_info, record_info, verdict, reasons):
     global max_gallery_page
     global max_scraps_page
 
+    url = url_info['url']
+
     if verdict:
         match = re.search(r'furaffinity\.net/(\w+)/([^/]+)/(\d+)/', url)
 
         if match:
             what_type = match.group(1).lower()
 
-            if what_type in ('gallery', 'scraps'):
+            if what_type in ('gallery', 'scraps', 'favorites'):
                 num = int(match.group(3))
 
                 if what_type == 'gallery':
@@ -36,6 +41,21 @@ def accept_url(url_info, record_info, verdict, reasons):
                     if max_scraps_page is not None and num > max_scraps_page:
                         print_('Pagination complete for scraps')
                         return False
+                elif what_type == 'favorites':
+                    if max_favorites_page is not None and num > max_favorites_page:
+                        print_('Pagination complete for favorites')
+                        return False
+                else:
+                    raise Exception('Unknown what type!')
+
+        if '/themes/classic/img/banners/fa_logo.png' in url_info['url']:
+            return False
+        if '/themes/classic/img/banners/logo/2015_02_applepup.jpg' in url_info['url']:
+            return False
+        if '/themes/classic/img/smilies/' in url_info['url']:
+            return False
+        if '/themes/classic/img/file-types/' in url_info['url']:
+            return False
 
     return verdict
 
@@ -89,19 +109,21 @@ def get_urls(filename, url_info, document_info):
     urls = []
 
     if 'furaffinity.net' in url_info['hostname']:
-        with open(filename, 'r') as file:
+        with open(filename, 'r', encoding='utf8', errors='replace') as file:
             text = file.read(1048576)
 
         check_ok_content(text)
 
-        if not is_text_404:
-            with open('usernames.txt', 'a') as file:
+        if not is_text_404(text):
+            with open(os.path.join(item_dir, 'usernames.txt'), 'a', encoding='utf8', errors='replace') as file:
                 for username in scrape_usernames(text):
                     file.write(username)
                     file.write('\n')
 
             url = url_info['url']
             check_pagination(text, url)
+
+        print_('Looking good so far..')
 
     return urls
 
@@ -118,7 +140,7 @@ def check_ok_content(text):
         print_('Problem detected. Not logged in! Sleeping.')
         time.sleep(60)
         raise Exception('Not logged in!')
-    elif ok_text_found and not is_404_error_page and 'Toggle to hide Mature and Adult submissions.' not response.text:
+    elif ok_text_found and not is_404_error_page and 'Toggle to hide Mature and Adult submissions.' not in text:
         print_('Problem detected. Cannot view adult material! Sleeping.')
         time.sleep(60)
         raise Exception('Cannot view adult material!')
@@ -142,24 +164,37 @@ def scrape_usernames(text):
 def check_pagination(text, url):
     global max_gallery_page
     global max_scraps_page
+    global max_favorites_page
 
     match = re.search(r'furaffinity\.net/(\w+)/([^/]+)/(\d+)/', url)
 
     if match:
-        if not codecs.encode('kzyuggc_znxrf_gebtqbe_fnq', 'rot_13'):
-            raise Exception('Could not find pagination form!')
+        # if codecs.encode('kzyuggc_znxrf_gebtqbe_fnq', 'rot_13') not in text:
+        #     raise Exception('Could not find pagination form!')
 
         what_type = match.group(1).lower()
 
-        if what_type in ('gallery', 'scraps') and 'There are no submissions to list' in text:
+        if what_type in ('gallery', 'scraps', 'favorites') and 'There are no submissions to list' in text:
             num = int(match.group(3))
 
             if what_type == 'gallery':
-                max_gallery_page = num
+                if max_gallery_page is None:
+                    max_gallery_page = num
             elif what_type == 'scraps':
-                max_scraps_page = num
+                if max_scraps_page is None:
+                    max_scraps_page = num
+            elif what_type == 'favorites':
+                if max_favorites_page is None:
+                    max_favorites_page = num
             else:
                 raise Exception('Unknown what type!')
+
+
+def wait_time(seconds, url_info, url_record, response, error):
+    if 'facdn.net' in url_info['hostname'] and not error:
+        return 0
+    else:
+        return seconds
 
 
 # wpull_hook.callbacks.engine_run = engine_run
@@ -171,6 +206,7 @@ wpull_hook.callbacks.handle_pre_response = handle_pre_response
 wpull_hook.callbacks.handle_response = handle_response
 wpull_hook.callbacks.handle_error = handle_error
 wpull_hook.callbacks.get_urls = get_urls
-# wpull_hook.callbacks.wait_time = wait_time
+wpull_hook.callbacks.wait_time = wait_time
 # wpull_hook.callbacks.finish_statistics = finish_statistics
 # wpull_hook.callbacks.exit_status = exit_status
+wpull_hook.callbacks.version = 3

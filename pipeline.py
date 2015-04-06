@@ -2,6 +2,7 @@ from distutils.version import StrictVersion
 import datetime
 import hashlib
 import os
+import random
 import re
 import socket
 import shutil
@@ -201,7 +202,7 @@ class WgetArgs(object):
             "--database", ItemInterpolation("%(item_dir)s/wpull.db"),
             "--delete-after",
             "--no-robots",
-            "--load-cookies", ItemInterpolation("%(item_dir)s/cookies.txt")
+            "--load-cookies", ItemInterpolation("%(item_dir)s/cookies.txt"),
             "--rotate-dns",
             "--recursive", "--level=inf",
             "--no-parent",
@@ -298,6 +299,7 @@ pipeline = Pipeline(
             'user_agent': user_agent,
             'bind_address': globals().get('bind_address', ''),
             'disco_tracker': DISCO_TRACKER_URL,
+            "item_dir": ItemValue("item_dir"),
         },
         accept_on_exit_code=[0],
     ),
@@ -321,8 +323,10 @@ pipeline = Pipeline(
         'End',
         [sys.executable, 'helper.py', 'end'],
         env={
+            'user_agent': user_agent,
             'bind_address': globals().get('bind_address', ''),
             'disco_tracker': DISCO_TRACKER_URL,
+            "item_dir": ItemValue("item_dir"),
         },
         accept_on_exit_code=[0],
     ),

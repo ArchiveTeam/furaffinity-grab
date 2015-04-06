@@ -23,6 +23,7 @@ def main():
     command = sys.argv[1]
     user_agent = os.environ['user_agent']
     disco_tracker = os.environ['disco_tracker']
+    item_dir = os.environ['item_dir']
 
     if 'bind_address' in os.environ:
         # https://stackoverflow.com/questions/1150332/source-interface-with-python-and-urllib2
@@ -34,7 +35,7 @@ def main():
         socket.socket = bound_socket
 
     requests_session = requests.Session()
-    requests_session.cookies = cookie_jar = cookielib.MozillaCookieJar('cookies.txt')
+    requests_session.cookies = cookie_jar = cookielib.MozillaCookieJar(os.path.join(item_dir, 'cookies.txt'))
     state = {
         'logged_in': False
     }
@@ -138,33 +139,28 @@ def main():
         state['logged_in'] = False
         fetch('https://www.furaffinity.net/logout/', expect_status=302)
 
-    if command == 'start':
+    if command == 'begin':
         login()
-
-        with open('state.pickle', 'wb') as state_file:
-            print_('Save state.')
-            pickle.dump(requests_session.cookies, state_file)
 
         print_('Save cookies.')
         cookie_jar.save()
     elif command == 'end':
         state['logged_in'] = True
 
-        with open('state.pickle', 'rb') as state_file:
-            print_('Load state.')
-            requests_session.cookies = pickle.load(state_file)
+        print_('Load cookies')
+        cookie_jar.load()
 
         logout()
 
         scraped_usernames = set()
 
-        with open('usernames.txt', 'r') as file:
+        with open(os.path.join(item_dir, 'usernames.txt'), 'r') as file:
             for line in file:
                 scraped_usernames.add(line.strip())
 
         results = {
             'discovered_usernames': tuple(scraped_usernames),
-            'username_disabled_map': []
+            'username_disabled_map': {}
         }
 
         upload_username_results(results, disco_tracker, scraped_from_private=True)
@@ -200,3 +196,7 @@ def upload_username_results(results, tracker_url, scraped_from_private=False):
                 time.sleep(60)
 
     raise Exception('Failed to upload.')
+
+
+if __name__ == '__main__':
+    main()
