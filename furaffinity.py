@@ -56,6 +56,8 @@ def accept_url(url_info, record_info, verdict, reasons):
             return False
         if '/themes/classic/img/file-types/' in url_info['url']:
             return False
+        if re.search(r'/commissions/.*/(add|manage)/$', url_info['url']):
+            return False
 
     return verdict
 
