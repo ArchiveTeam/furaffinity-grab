@@ -48,13 +48,13 @@ def accept_url(url_info, record_info, verdict, reasons):
                 else:
                     raise Exception('Unknown what type!')
 
-        if '/themes/classic/img/banners/fa_logo.png' in url_info['url']:
+        if '/themes/classic/img/' in url_info['url']:
             return False
-        if '/themes/classic/img/banners/logo/2015_02_applepup.jpg' in url_info['url']:
+        if 'google-analytics.com' in url_info['url']:
             return False
-        if '/themes/classic/img/smilies/' in url_info['url']:
+        if 'google.com/analytics' in url_info['url']:
             return False
-        if '/themes/classic/img/file-types/' in url_info['url']:
+        if 'gstatic.com/analytics' in url_info['url']:
             return False
         if re.search(r'/commissions/.*/(add|manage)/$', url_info['url']):
             return False
