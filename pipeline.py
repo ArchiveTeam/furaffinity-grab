@@ -228,12 +228,12 @@ class WgetArgs(object):
             assert ',' not in username, 'multi user not supported {0}'.format(item_value)
 
             wget_args.extend([
-                'https://www.furaffinity.net/user/{}/'.format(username),
-                'https://www.furaffinity.net/commissions/{}/'.format(username),
-                'https://www.furaffinity.net/journals/{}/'.format(username),
-                'https://www.furaffinity.net/gallery/{}/'.format(username),
-                'https://www.furaffinity.net/scraps/{}/'.format(username),
-                'https://www.furaffinity.net/favorites/{}/'.format(username),
+                'https://www.furaffinity.net/user/{0}/'.format(username),
+                'https://www.furaffinity.net/commissions/{0}/'.format(username),
+                'https://www.furaffinity.net/journals/{0}/'.format(username),
+                'https://www.furaffinity.net/gallery/{0}/'.format(username),
+                'https://www.furaffinity.net/scraps/{0}/'.format(username),
+                'https://www.furaffinity.net/favorites/{0}/'.format(username),
             ])
         elif item_type == 'journal':
             start_num, end_num = item_value.split('-', 1)
@@ -242,7 +242,7 @@ class WgetArgs(object):
 
             for num in nums:
                 wget_args.append(
-                    'https://www.furaffinity.net/journal/{}/'.format(num)
+                    'https://www.furaffinity.net/journal/{0}/'.format(num)
                 )
 
         elif item_type == 'submission':
@@ -255,8 +255,8 @@ class WgetArgs(object):
 
             for num in nums:
                 wget_args.extend([
-                    'https://www.furaffinity.net/view/{}/'.format(num),
-                    'https://www.furaffinity.net/full/{}/'.format(num),
+                    'https://www.furaffinity.net/view/{0}/'.format(num),
+                    'https://www.furaffinity.net/full/{0}/'.format(num),
                 ]
             )
 
