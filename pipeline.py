@@ -256,9 +256,9 @@ class WgetArgs(object):
             for num in nums:
                 wget_args.extend([
                     'https://www.furaffinity.net/view/{0}/'.format(num),
-                    'https://www.furaffinity.net/full/{0}/'.format(num),
-                ]
-            )
+                    # 'https://www.furaffinity.net/full/{0}/'.format(num),
+                    # enable full view in profile settings
+                ])
 
         else:
             raise Exception('Unknown item type.')

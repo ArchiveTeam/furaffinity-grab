@@ -62,7 +62,7 @@ def accept_url(url_info, record_info, verdict, reasons):
         if 'facdn.net' in url and 'furaffinity.net/favorites/' in record_info['referrer']:
             return False
 
-    if not verdict and 'facdn.net' in url and 'furaffinity.net/full/' in record_info['referrer']:
+    if not verdict and 'facdn.net' in url and 'furaffinity.net/view/' in record_info['referrer']:
         return True
 
     return verdict
@@ -131,6 +131,9 @@ def get_urls(filename, url_info, document_info):
             url = url_info['url']
             check_pagination(text, url)
 
+            if 'furaffinity.net/view/' in url:
+                check_full_view(text)
+
         print_('Looking good so far..')
 
         match = re.search(r'<a href="([^"]+)">Download</a>', text)
@@ -162,6 +165,11 @@ def check_ok_content(text):
         print_('Problem detected. Cannot view adult material! Sleeping.')
         time.sleep(60)
         raise Exception('Cannot view adult material!')
+
+
+def check_full_view(text):
+    if 'var is_full = 1;' not in text:
+        raise Exception('Full view not found!')
 
 
 def is_text_404(text):
