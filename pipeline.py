@@ -53,11 +53,11 @@ if not WPULL_EXE:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = "20150000.01"
+VERSION = "20150408.01"
 # USER_AGENT = 'ArchiveTeam'
 TRACKER_ID = 'furaffinity'
-TRACKER_HOST = 'localhost:9080'
-DISCO_TRACKER_URL = 'http://localhost:8058'
+TRACKER_HOST = 'tracker.archiveteam.org'
+DISCO_TRACKER_URL = 'http://tracker.archiveteam.org/' + '_fa_disco'
 
 USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
