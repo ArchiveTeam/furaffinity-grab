@@ -53,7 +53,7 @@ if not WPULL_EXE:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = "20150408.01"
+VERSION = "20150408.02"
 # USER_AGENT = 'ArchiveTeam'
 TRACKER_ID = 'furaffinity'
 TRACKER_HOST = 'tracker.archiveteam.org'
@@ -314,7 +314,7 @@ pipeline = Pipeline(
     LimitConcurrent(
         NumberConfigValue(
             min=1, max=6, default=globals().get("num_procs", "1"),
-            name="shared:fadisco:num_procs", title="Number of Processes",
+            name="shared:fagrab:num_procs", title="Number of Processes",
             description="The maximum number of concurrent download processes."
         ),
         WgetDownload(
