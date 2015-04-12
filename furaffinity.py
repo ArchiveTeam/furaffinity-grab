@@ -168,6 +168,11 @@ def check_ok_content(text):
 
 
 def check_full_view(text):
+    if '<object type="application/x-shockwave-flash"' in text and \
+            'facdn.net/art/' in text and \
+            '.swf">Download</a>' in text:
+        return
+
     if 'var is_full = 1;' not in text:
         raise Exception('Full view not found!')
 
