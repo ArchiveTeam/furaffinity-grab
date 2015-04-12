@@ -81,14 +81,19 @@ def handle_response(url_info, record_info, response_info):
         raise Exception('Too many tries in this session!')
 
     status_code = response_info['status_code']
+    url = url_info['url']
 
     if status_code != 404 and status_code >= 400:
-        print_('Uh oh!. Sleeping...')
-        time.sleep(60)
+        if 'furaffinity.net' in url or 'facdn.net' in url:
+            print_('Uh oh!. Sleeping...')
+            time.sleep(60)
+
         tries += 1
 
-        if tries > 5:
+        if tries >= 5 and ('furaffinity.net' in url or 'facdn.net' in url):
             raise Exception('Giving up')
+        elif tries >= 5:
+            return wpull_hook.actions.FINISH
         else:
             return wpull_hook.actions.RETRY
 
@@ -107,8 +112,11 @@ def handle_error(url_info, record_info, error_info):
         raise Exception('Too many tries in this session!')
 
     tries += 1
-    if tries > 5:
+    url = url_info['url']
+    if tries >= 5 and ('furaffinity.net' in url or 'facdn.net' in url):
         raise Exception('Giving up')
+    elif tries >= 5:
+        return wpull_hook.actions.FINISH
 
     return wpull_hook.actions.NORMAL
 
