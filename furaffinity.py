@@ -81,7 +81,7 @@ def handle_response(url_info, record_info, response_info):
     global total_tries
     total_tries += 1
 
-    if total_tries > 1000:
+    if total_tries > 5000:
         raise Exception('Too many tries in this session!')
 
     status_code = response_info['status_code']
@@ -112,7 +112,7 @@ def handle_error(url_info, record_info, error_info):
     global total_tries
     total_tries += 1
 
-    if total_tries > 1000:
+    if total_tries > 5000:
         raise Exception('Too many tries in this session!')
 
     tries += 1
