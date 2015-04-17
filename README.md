@@ -21,7 +21,7 @@ Running without a warrior
 -------------------------
 To run this outside the warrior, clone this repository, cd into its directory and run:
 
-    pip install --upgrade seesaw
+    pip install --upgrade seesaw requests
 
 Grab a copy of Wpull 1.0 from https://launchpad.net/wpull/+download:
 
@@ -62,7 +62,7 @@ Distribution-specific setup
 
     adduser --system --group --shell /bin/bash archiveteam
     apt-get update && install -y git-core libgnutls-dev screen python-dev python-pip bzip2 zlib1g-dev unzip
-    pip install --upgrade seesaw
+    pip install --upgrade seesaw requests
     su -c "cd /home/archiveteam; git clone https://github.com/ArchiveTeam/furaffinity-grab.git" archiveteam
     su -c "cd /home/archiveteam/furaffinity-grab/; wget https://launchpad.net/wpull/trunk/v1.0/+download/wpull-1.0-linux-x86_64-3.4.3-20150322014153.zip; unzip wpull-1.0-linux-x86_64-3.4.3-20150322014153.zip; chmod +x ./wpull" archiveteam
     screen su -c "cd /home/archiveteam/furaffinity-grab/; run-pipeline pipeline.py --concurrent 2 --address '127.0.0.1' YOURNICKHERE" archiveteam
@@ -74,7 +74,7 @@ Distribution-specific setup
 Ensure that you have the CentOS equivalent of bzip2 installed as well. You might need the EPEL repository to be enabled.
 
     yum -y install gnutls-devel python-pip zlib-devel unzip
-    pip install --upgrade seesaw
+    pip install --upgrade seesaw requests
     [... pretty much the same as above ...]
 
 ### For openSUSE:
@@ -88,7 +88,7 @@ Ensure that you have the CentOS equivalent of bzip2 installed as well. You might
 You need Homebrew. Ensure that you have the OS X equivalent of bzip2 installed as well.
 
     brew install python gnutls unzip
-    pip install --upgrade seesaw
+    pip install --upgrade seesaw requests
     [... pretty much the same as above ...]
 
 **There is a known issue with some packaged versions of rsync. If you get errors during the upload stage, furaffinity-grab will not work with your rsync version.**
@@ -102,7 +102,7 @@ This supposedly fixes it:
 Ensure that you have the Arch equivalent of bzip2 installed as well.
 
 1. Make sure you have `python2-pip` installed.
-2. Run `pip2 install seesaw`.
+2. Run `pip2 install seesaw requests`.
 3. Modify the run-pipeline script in seesaw to point at `#!/usr/bin/python2` instead of `#!/usr/bin/python`.
 4. `useradd --system --group users --shell /bin/bash --create-home archiveteam`
 5. `su -c "cd /home/archiveteam; git clone https://github.com/ArchiveTeam/furaffinity-grab.git" archiveteam`
@@ -146,4 +146,4 @@ Are you a developer? Help write code for us! Look at our [developer documentatio
 
 ### Other problems
 
-Have an issue not listed here? Join us on IRC and ask! We can be found at irc.efnet.org #{{IRC_CHANNEL}}.
+Have an issue not listed here? Join us on IRC and ask! We can be found at irc.efnet.org #iceking.
