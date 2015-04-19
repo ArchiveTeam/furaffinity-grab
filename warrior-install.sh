@@ -1,5 +1,18 @@
 #!/bin/sh -e
 
+
+if ! sudo pip freeze | grep -q requests
+then
+  echo "Installing Requests"
+  if ! sudo pip install requests
+  then
+    exit 1
+  fi
+fi
+
+
+# V wpull V
+
 VERSION='1.0'
 TARBALL_32='wpull-1.0-linux-i686-3.4.3-20150314005854.zip'
 CHECKSUM_32=9bb26c21e4904c92d530455646365d0f
