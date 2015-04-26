@@ -66,6 +66,9 @@ def accept_url(url_info, record_info, verdict, reasons):
             # ArchiveTeam is banned from stupid puush
             return False
 
+        if 'googleadservices.com/gampad/cookie.js' in url:
+            return False
+
     if not verdict and 'facdn.net' in url and 'furaffinity.net/view/' in record_info['referrer']:
         return True
 
