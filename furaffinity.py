@@ -48,13 +48,13 @@ def accept_url(url_info, record_info, verdict, reasons):
                 else:
                     raise Exception('Unknown what type!')
 
-        if '/themes/classic/' in url_info['url']:
+        if '/themes/classic/' in url:
             return False
-        if 'google-analytics.com' in url_info['url']:
+        if 'google-analytics.com' in url:
             return False
-        if 'google.com/analytics' in url_info['url']:
+        if 'google.com/analytics' in url:
             return False
-        if 'gstatic.com/analytics' in url_info['url']:
+        if 'gstatic.com/analytics' in url:
             return False
         if re.search(r'/commissions/.*/(add|manage)/$', url_info['url']):
             return False
@@ -66,7 +66,11 @@ def accept_url(url_info, record_info, verdict, reasons):
             # ArchiveTeam is banned from stupid puush
             return False
 
-        if 'googleadservices.com/gampad/cookie.js' in url:
+        if 'googleadservices.com' in url:
+            return False
+        if 'googlesyndication.com/pagead/' in url:
+            return False
+        if 'googletagservices.com' in url:
             return False
 
     if not verdict and 'facdn.net' in url and 'furaffinity.net/view/' in record_info['referrer']:
