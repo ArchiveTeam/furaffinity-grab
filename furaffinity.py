@@ -238,6 +238,10 @@ def check_pagination(text, url):
             elif what_type == 'favorites':
                 if max_favorites_page is None:
                     max_favorites_page = num
+
+                    if max_favorites_page > 1000:
+                        max_favorites_page = 1000
+                        print_('Wow, this user likes a lot of things! Capped the pagination.')
             else:
                 raise Exception('Unknown what type!')
 
