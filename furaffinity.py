@@ -18,6 +18,11 @@ def print_(*args, **kwargs):
     sys.stdout.flush()
 
 
+def engine_run():
+    with open(os.path.join(item_dir, 'usernames.txt'), 'a'):
+        pass
+
+
 def accept_url(url_info, record_info, verdict, reasons):
     global max_gallery_page
     global max_scraps_page
@@ -253,7 +258,7 @@ def wait_time(seconds, url_info, url_record, response, error):
         return seconds
 
 
-# wpull_hook.callbacks.engine_run = engine_run
+wpull_hook.callbacks.engine_run = engine_run
 # wpull_hook.callbacks.resolve_dns = resolve_dns
 wpull_hook.callbacks.accept_url = accept_url
 # wpull_hook.callbacks.queued_url = queued_url
