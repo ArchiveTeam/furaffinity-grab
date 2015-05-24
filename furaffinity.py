@@ -81,7 +81,11 @@ def accept_url(url_info, record_info, verdict, reasons):
         if 'googletagservices.com' in url:
             return False
 
-    if not verdict and 'facdn.net' in url and 'furaffinity.net/view/' in record_info['referrer']:
+        if url.endswith('//d.facdn.net/art/'):
+            return False
+
+    if not verdict and 'facdn.net' in url and 'furaffinity.net/view/' in record_info['referrer'] \
+            and not url.endswith('//d.facdn.net/art/'):
         return True
 
     return verdict
