@@ -104,7 +104,7 @@ def handle_response(url_info, record_info, response_info):
     total_tries += 1
 
     max_tries = 5000
-    if max_scraps_page > 50 or max_gallery_page > 50:
+    if (max_scraps_page or 0) > 50 or (max_gallery_page or 0) > 50:
         max_tries = 10000
 
     if total_tries > max_tries:
@@ -140,7 +140,7 @@ def handle_error(url_info, record_info, error_info):
     total_tries += 1
 
     max_tries = 5000
-    if max_scraps_page > 50 or max_gallery_page > 50:
+    if (max_scraps_page or 0) > 50 or (max_gallery_page or 0) > 50:
         max_tries = 10000
 
     if total_tries > max_tries:
