@@ -50,7 +50,7 @@ def accept_url(url_info, record_info, verdict, reasons):
                     if max_favorites_page is not None and num > max_favorites_page:
                         print_('Pagination complete for favorites')
                         return False
-                    elif num > 1000:
+                    elif num > 500:
                         print_('Wow, this user likes a lot of things! Capped the pagination.')
                         return False
                 else:
