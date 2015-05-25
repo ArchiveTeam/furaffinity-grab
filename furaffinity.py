@@ -105,15 +105,16 @@ def handle_response(url_info, record_info, response_info):
 
     status_code = response_info['status_code']
     url = url_info['url']
+    hostname = url_info['hostname']
 
     if status_code not in (404, 410) and status_code >= 400:
-        if 'furaffinity.net' in url or 'facdn.net' in url:
+        if 'furaffinity.net' in hostname or 'facdn.net' in hostname:
             print_('Uh oh!. Sleeping...')
             time.sleep(60)
 
         tries += 1
 
-        if tries >= 5 and ('furaffinity.net' in url or 'facdn.net' in url):
+        if tries >= 5 and ('furaffinity.net' in hostname or 'facdn.net' in hostname):
             raise Exception('Giving up')
         elif tries >= 5:
             return wpull_hook.actions.FINISH
