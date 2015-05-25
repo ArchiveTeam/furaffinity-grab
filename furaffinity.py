@@ -84,6 +84,9 @@ def accept_url(url_info, record_info, verdict, reasons):
         if url.endswith('//d.facdn.net/art/'):
             return False
 
+        if re.match(r'^https?://d\.facdn\.net/art/.*/$', url):
+            return False
+
     if not verdict and 'facdn.net' in url and 'furaffinity.net/view/' in record_info['referrer'] \
             and not url.endswith('//d.facdn.net/art/'):
         return True
