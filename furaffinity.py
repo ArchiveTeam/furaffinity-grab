@@ -166,7 +166,7 @@ def get_urls(filename, url_info, document_info):
             url = url_info['url']
             check_pagination(text, url)
 
-            if 'furaffinity.net/view/' in url:
+            if re.match(r'^https?://(www\.)?furaffinity\.net/view/\d+', url):
                 check_full_view(text)
 
         print_('Looking good so far..')
