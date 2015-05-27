@@ -217,6 +217,12 @@ def check_full_view(text):
             ('">Download</a>' in text or '">Download </a>' in text):
         return
 
+    if ' type="application/x-shockwave-flash"' in text and \
+            '//d.facdn.netswf/' in text and \
+            ('">Download</a>' in text or '">Download </a>' in text):
+        # Website can't even URL properly
+        return
+
     if 'var is_full = 1;' not in text:
         raise Exception('Full view not found!')
 
