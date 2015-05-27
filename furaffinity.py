@@ -11,6 +11,7 @@ max_gallery_page = None
 max_scraps_page = None
 max_favorites_page = None
 item_dir = os.environ['item_dir']
+lots_of_submissions = False
 
 
 def print_(*args, **kwargs):
@@ -104,7 +105,7 @@ def handle_response(url_info, record_info, response_info):
     total_tries += 1
 
     max_tries = 5000
-    if (max_scraps_page or 0) > 50 or (max_gallery_page or 0) > 50:
+    if lots_of_submissions:
         max_tries = 10000
 
     if total_tries > max_tries:
@@ -140,7 +141,7 @@ def handle_error(url_info, record_info, error_info):
     total_tries += 1
 
     max_tries = 5000
-    if (max_scraps_page or 0) > 50 or (max_gallery_page or 0) > 50:
+    if lots_of_submissions:
         max_tries = 10000
 
     if total_tries > max_tries:
@@ -241,6 +242,7 @@ def check_pagination(text, url):
     global max_gallery_page
     global max_scraps_page
     global max_favorites_page
+    global lots_of_submissions
 
     match = re.search(r'furaffinity\.net/(\w+)/([^/]+)/(\d+)/', url)
 
@@ -264,6 +266,11 @@ def check_pagination(text, url):
                     max_favorites_page = num
             else:
                 raise Exception('Unknown what type!')
+
+        if what_type in ('gallery', 'scraps'):
+            num = int(match.group(3))
+            if num > 50:
+                lots_of_submissions = True
 
 
 def wait_time(seconds, url_info, url_record, response, error):
