@@ -82,14 +82,14 @@ def accept_url(url_info, record_info, verdict, reasons):
         if 'googletagservices.com' in url:
             return False
 
-        if url.endswith('//d.facdn.net/art/'):
+        if url.endswith('//d.facdn.net/art/') or url.endswith('//d.facdn.net/'):
             return False
 
         if re.match(r'^https?://d\.facdn\.net/art/.*/$', url):
             return False
 
     if not verdict and 'facdn.net' in url and 'furaffinity.net/view/' in record_info['referrer'] \
-            and not url.endswith('//d.facdn.net/art/'):
+            and not url.endswith('//d.facdn.net/art/') and not url.endswith('//d.facdn.net/'):
         return True
 
     return verdict
