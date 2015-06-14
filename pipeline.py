@@ -323,7 +323,8 @@ pipeline = Pipeline(
             accept_on_exit_code=[0, 4, 7, 8],
             env={
                 "item_dir": ItemValue("item_dir"),
-                "downloader": downloader
+                "downloader": downloader,
+                "item_name": ItemValue("item_name"),
             }
         ),
     ),
