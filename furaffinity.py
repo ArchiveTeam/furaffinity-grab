@@ -12,6 +12,7 @@ max_scraps_page = None
 max_favorites_page = None
 item_dir = os.environ['item_dir']
 lots_of_submissions = False
+item_name = os.environ['item_name']
 
 
 def print_(*args, **kwargs):
@@ -89,6 +90,9 @@ def accept_url(url_info, record_info, verdict, reasons):
             return False
 
         if url == 'http://d.facdn.net/art/zekromlover/1398041825.zekromlover_fuleco-300x300_1_.gif':
+            return False
+
+        if item_name == 'journal:5259901-5259950' and re.match(r'https?://a\.facdn\.net/.*\.gif$', url):
             return False
 
     if not verdict and 'facdn.net' in url and 'furaffinity.net/view/' in record_info['referrer'] \
