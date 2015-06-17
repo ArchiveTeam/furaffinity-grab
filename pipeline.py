@@ -53,7 +53,7 @@ if not WPULL_EXE:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = "20150614.01"
+VERSION = "20150617.01"
 # USER_AGENT = 'ArchiveTeam'
 TRACKER_ID = 'furaffinity'
 TRACKER_HOST = 'tracker.archiveteam.org'
@@ -233,8 +233,11 @@ class WgetArgs(object):
                 'https://www.furaffinity.net/journals/{0}/'.format(username),
                 'https://www.furaffinity.net/gallery/{0}/'.format(username),
                 'https://www.furaffinity.net/scraps/{0}/'.format(username),
-                'https://www.furaffinity.net/favorites/{0}/'.format(username),
             ])
+
+            if username not in ('nacht', 'virus-20', 'redmagejacob'):
+                wget_args.append('https://www.furaffinity.net/favorites/{0}/'.format(username))
+
         elif item_type == 'journal':
             start_num, end_num = item_value.split('-', 1)
             nums = list(range(int(start_num), int(end_num) + 1))
