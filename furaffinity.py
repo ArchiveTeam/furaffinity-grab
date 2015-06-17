@@ -282,7 +282,7 @@ def check_pagination(text, url):
 
         if what_type in ('gallery', 'scraps'):
             num = int(match.group(3))
-            if num > 40:
+            if num > 30:
                 lots_of_submissions = True
 
 
