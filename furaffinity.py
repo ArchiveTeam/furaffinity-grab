@@ -95,6 +95,9 @@ def accept_url(url_info, record_info, verdict, reasons):
         if item_name == 'journal:5259901-5259950' and re.match(r'https?://a\.facdn\.net/.*\.gif$', url):
             return False
 
+        if 'static.zoovy.com' in url:
+            return False
+
     if not verdict and 'facdn.net' in url and 'furaffinity.net/view/' in record_info['referrer'] \
             and not url.endswith('//d.facdn.net/art/') and not url.endswith('//d.facdn.net/'):
         return True
